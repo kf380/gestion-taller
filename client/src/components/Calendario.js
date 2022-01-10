@@ -6,12 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import AppBar from './AppBar';
-import Select from './Select'
-import Search from './Search'
-import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import Calendary from './Calendary';
-import { Typography } from '@mui/material';
 
 const mdTheme = createTheme();
 
@@ -37,17 +32,11 @@ function DashboardContent() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/* Chart */}
-              <Typography alignItems="right">Calendario</Typography>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-            
-              </Grid>
-              {/* Recent Orders */}
+     
               <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+             
                   <Calendary/>
-                </Paper>
+         
               </Grid>
             </Grid>
             {/* <Copyright sx={{ pt: 4 }} /> */}

@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import { Modal, Button, TextField} from '@material-ui/core';
+import XLSX from 'xlsx';
+import Box from '@mui/material/Box';
 import {makeStyles} from '@material-ui/core/styles'
-import MaterialTable, { Column } from "@material-table/core";
+import MaterialTable from "@material-table/core";
 import { StylesProvider, createGenerateClassName } from '@material-ui/styles';
 
 const generateClassName = createGenerateClassName({
@@ -195,12 +197,34 @@ function Table1() {
         </div>
     )
 
+    const dowloandExcel=()=>{
+        const workSheet=XLSX.utils.json_to_sheet(data)
+        const workBook=XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workBook, workSheet,"presupuesto")
+        
+      
+        
+        XLSX.write(workBook,{bookType:"xlsx",type:"binary"})
+
+        XLSX.writeFile(workBook, "presupuestoData.xlsx")
+      }
+
     return (
         <div>
             <StylesProvider generateClassName={generateClassName}>
-              <div align="center">
-              <Button onClick={()=>abrirCerrarModalInsertar()} color="secondary" variant="contained">Insertar compra</Button>
-              </div>
+            <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="20vh"
+      backgroundColor="#000	"
+    >
+     
+            <div align="center">
+                <Button onClick={()=>abrirCerrarModalInsertar()} color="secondary" variant="contained">Agregar compra</Button>
+                </div>
+  
+    </Box>
               
           <MaterialTable
           
@@ -208,6 +232,12 @@ function Table1() {
           data={data}
           title="Listado de Compras"  
           actions={[
+            {
+                icon:()=><Button color="primary" variant="contained">Exportar</Button>,
+                tooltip:"Exportar a Excel",
+                onClick:()=>dowloandExcel(),
+                isFreeAction:true
+              },
             {
               icon: 'edit',
               tooltip: 'Editar Compra',
@@ -221,6 +251,8 @@ function Table1() {
           ]}
           options={{
             actionsColumnIndex: -1,
+            rowStyle:(data,index)=>index%2===0?{background:"#f5f5f5"}:null,
+            headerStyle:{background:"#708090"}
           }}
           localization={{
             header:{

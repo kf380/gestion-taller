@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-import {Table, TableContainer, TableHead, TableCell, TableBody, TableRow, Modal, Button, TextField} from '@material-ui/core';
-import MaterialTable, { Column } from "@material-table/core";
+import { Modal, Button, TextField} from '@material-ui/core';
+import MaterialTable from "@material-table/core";
 import {makeStyles} from '@material-ui/core/styles'
+import XLSX from 'xlsx';
 import { StylesProvider, createGenerateClassName } from '@material-ui/styles';
 const generateClassName = createGenerateClassName({
   productionPrefix: 'mt',
@@ -12,7 +13,7 @@ const generateClassName = createGenerateClassName({
   const columns= [
     { title: 'Cliente', field: 'client._id' },
     { title: 'Estados', field: 'status' },
-    { title: 'Pago', field: 'status'},
+    { title: 'Pago', field: 'state'},
     { title: 'Vehiculo', field: 'vehicle'},
     { title: 'Fecha', field: 'date'},
     { title: 'Total', field: 'total'},
@@ -187,18 +188,32 @@ function Table1() {
 
         </div>
     )
+    const dowloandExcel=()=>{
+        const workSheet=XLSX.utils.json_to_sheet(data)
+        const workBook=XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workBook, workSheet,"ordenes")
+        
+      
+        
+        XLSX.write(workBook,{bookType:"xlsx",type:"binary"})
 
+        XLSX.writeFile(workBook, "OrdenData.xlsx")
+      }
     return (
         <div>
                 <StylesProvider generateClassName={generateClassName}>
-            <div align="center">
-                <Button onClick={()=>abrirCerrarModalInsertar()} color="secondary" variant="contained">Insertar orden</Button>
-                </div>
+
             <MaterialTable
           columns={columns}
           data={data}
           title="Listado de ordenes"  
           actions={[
+            {
+                icon:()=><Button color="primary" variant="contained">Exportar</Button>,
+                tooltip:"Exportar a Excel",
+                onClick:()=>dowloandExcel(),
+                isFreeAction:true
+              },
             {
               icon: 'edit',
               tooltip: 'Editar orden',
@@ -212,6 +227,8 @@ function Table1() {
           ]}
           options={{
             actionsColumnIndex: -1,
+             rowStyle:(data,index)=>index%2===0?{background:"#f5f5f5"}:null,
+            headerStyle:{background:"#708090"}
           }}
           localization={{
             header:{

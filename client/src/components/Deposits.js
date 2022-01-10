@@ -11,17 +11,9 @@ export default function Deposits() {
   return (
     <React.Fragment>
       <Title>Ingresos del dia de hoy</Title>
-      <Typography component="p" variant="h4">
+      <Typography align="center" component="p" variant="h4">
         $45,024.00
       </Typography>
-      <Typography color="text.secondary" sx={{ flex: 1 }}>
-        en el dia 8 de Noviembre,2021
-      </Typography>
-      <div>
-        <Link color="primary" href="#" onClick={preventDefault}>
-          Ver mas
-        </Link>
-      </div>
     </React.Fragment>
   );
 }

@@ -6,10 +6,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import AppBar from './AppBar';
-import Select from './Select'
-import Search from './Search'
-import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import Proveedores1 from './Proveedores1';
 
 const mdTheme = createTheme();
@@ -39,12 +35,11 @@ function DashboardContent() {
            
              
               <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+               
                   <Proveedores1/>
-                </Paper>
+
               </Grid>
             </Grid>
-            {/* <Copyright sx={{ pt: 4 }} /> */}
           </Container>
         </Box>
             </Box>

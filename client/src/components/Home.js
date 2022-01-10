@@ -8,7 +8,6 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Chart from './Chart';
 import Deposits from './Deposits';
-import Orders from './Orders';
 import AppBar from './AppBar';
 
 
@@ -42,6 +41,15 @@ function DashboardContent() {
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
       
+          <Grid item xs={12}>
+            <Paper sx={{p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                height: 280}}>
+              {/* <Orders /> */}
+              <img height="240" src="https://media.istockphoto.com/vectors/engine-oil-advertisement-banner-vector-id1019877440?k=20&m=1019877440&s=170667a&w=0&h=eOeZbZ_Nrvhs6ytWTvUFJQxNyhbo7jj-3B43VCy-_UQ="></img>
+            </Paper>
+          </Grid>
               <Grid item xs={12} md={8} lg={9}>
                 <Paper
                   sx={{
@@ -67,12 +75,15 @@ function DashboardContent() {
                   <Deposits />
                 </Paper>
               </Grid>
-              
               <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Orders />
-                </Paper>
-              </Grid>
+            <Paper sx={{p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                height: 280}}>
+              {/* <Orders /> */}
+              <img height="240" src="https://image.freepik.com/vector-gratis/bote-plastico-realista-banner-aceite-motor-aceite-motor_1284-58774.jpg"></img>
+            </Paper>
+          </Grid>
             </Grid>
           </Container>
         </Box>

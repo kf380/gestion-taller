@@ -13,15 +13,15 @@ import Administracion from './Administracion'
 import Caja from './Caja'
 import Taller from './Taller'
 import Inventario from './Inventario'
+import Metricas from './Metricas'
 import Herramientas from './Herramientas'
 export const mainListItems = (
   <div>
     <ListItem button>
       <ListItemIcon >
-        <DashboardIcon href="/" />
+        <DashboardIcon />
       </ListItemIcon>
-      Dashboard
-    
+    <Metricas/>
     </ListItem>
     <ListItem button>
       <ListItemIcon>

@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-import {Table, TableContainer, TableHead, TableCell, TableBody, TableRow, Modal, Button, TextField} from '@material-ui/core';
-import {Edit, Delete} from '@material-ui/icons';
-import MaterialTable, { Column } from "@material-table/core";
-import {makeStyles} from '@material-ui/core/styles'
+import {Modal, Button, TextField} from '@material-ui/core';
+import MaterialTable from "@material-table/core";
 import useStyles  from './useStyles';
+import XLSX from 'xlsx';
+import Box from '@mui/material/Box';
 import { StylesProvider, createGenerateClassName } from '@material-ui/styles';
 const generateClassName = createGenerateClassName({
   productionPrefix: 'mt',
@@ -13,11 +13,9 @@ const generateClassName = createGenerateClassName({
 });
 
   const columns= [
-    { title: 'ID', field: '_id' },
     { title: 'Nombre', field: 'name' },
     { title: 'Email', field: 'email' },
-    { title: 'DNI', field: 'DNI'},
-    { title: 'CUIT', field: 'CUIT'},
+    { title: 'DNI/CUIT', field: 'NIDentificador'},
     { title: 'Telefono', field: 'telephone'}
   ];
 
@@ -30,11 +28,9 @@ function Table1() {
     const[modalEditar,setModalEditar]=useState(false);
     const[modalEliminar,setModalEliminar]=useState(false);
     const [proveedorSeleccioando,setProveedorSeleccionado]=useState({
-        ID:"",
         name:"",
         email:"",
-        DNI:"",
-        CUIT:"",
+        NIDentificador:"",
         telephone:""
     })
     const handleChange=e=>{
@@ -74,8 +70,7 @@ function Table1() {
                 if(proveedor.id===proveedorSeleccioando._id)
                 proveedor.name=proveedorSeleccioando.name;
                 proveedor.email=proveedorSeleccioando.email;
-                proveedor.DNI=proveedorSeleccioando.DNI;
-                proveedor.CUIT=proveedorSeleccioando.CUIT;
+                proveedor.NIDentificador=proveedorSeleccioando.NIDentificador;
                 proveedor.telephone=proveedorSeleccioando.telephone;
             })
             setData(dataNueva);
@@ -121,10 +116,9 @@ function Table1() {
     const bodyInsertar=(
         <div className={styles.modal}>
             <h3>Agregar Nuevo proveedor</h3>
-            <TextField className={styles.inputMaterial} label="Name" name="name" onChange={handleChange}/>
+            <TextField className={styles.inputMaterial} label="Nombre" name="name" onChange={handleChange}/>
             <TextField className={styles.inputMaterial} label="Email" name="email" onChange={handleChange}/> 
-            <TextField className={styles.inputMaterial} label="DNI" name="DNI" onChange={handleChange}/>
-            <TextField className={styles.inputMaterial} label="CUIT" name="CUIT" onChange={handleChange}/>
+            <TextField className={styles.inputMaterial} label="DNI/CUIT" name="NIDentificador" onChange={handleChange}/>
             <TextField className={styles.inputMaterial} label="Telefono" name="telephone" onChange={handleChange}/>
         <div align="center">
             <Button color="primary" onClick={()=>peticionesPost()}>Insertar</Button>
@@ -138,10 +132,9 @@ function Table1() {
        
         <div className={styles.modal}>
             <h3>Editar proveedor</h3>
-            <TextField className={styles.inputMaterial} label="Name" name="name" onChange={handleChange} value={proveedorSeleccioando && proveedorSeleccioando.name}  />
+            <TextField className={styles.inputMaterial} label="Nombre" name="name" onChange={handleChange} value={proveedorSeleccioando && proveedorSeleccioando.name}  />
             <TextField className={styles.inputMaterial} label="Email" name="email" onChange={handleChange} value={proveedorSeleccioando && proveedorSeleccioando.email}/> 
-            <TextField className={styles.inputMaterial} label="DNI" name="DNI" onChange={handleChange} value={proveedorSeleccioando&&proveedorSeleccioando.DNI}/>
-            <TextField className={styles.inputMaterial} label="CUIT" name="CUIT" onChange={handleChange} value={proveedorSeleccioando && proveedorSeleccioando.CUIT}/>
+            <TextField className={styles.inputMaterial} label="DNI/CUIT" name="NIDentificador" onChange={handleChange} value={proveedorSeleccioando&&proveedorSeleccioando.NIDentificador}/>
             <TextField className={styles.inputMaterial} label="Telefono" name="telephone" onChange={handleChange} value={proveedorSeleccioando && proveedorSeleccioando.telephone}/>
         <div align="center">
             <Button color="primary" onClick={()=>peticionesPut()}>Editar</Button>
@@ -154,7 +147,7 @@ function Table1() {
 
     const bodyEliminar=(
         <div className={styles.modal}>
-            <p>Estas seguro que deseas eliminar el cheque <b>{proveedorSeleccioando&&proveedorSeleccioando.bank}</b> ? </p>
+            <p>Estas seguro que deseas eliminar el proveedor <b>{proveedorSeleccioando&&proveedorSeleccioando.name}</b> ? </p>
             <div align="right">
                 <Button color="secondary" onClick={()=>peticionesDelete()}>SI</Button>
                 <Button onClick={()=>abrirCerrarModalEliminar()}>NO</Button>
@@ -164,17 +157,44 @@ function Table1() {
         </div>
     )
 
+    const dowloandExcel=()=>{
+        const workSheet=XLSX.utils.json_to_sheet(data)
+        const workBook=XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workBook, workSheet,"cheque")
+        
+      
+        
+        XLSX.write(workBook,{bookType:"xlsx",type:"binary"})
+
+        XLSX.writeFile(workBook, "ChequeData.xlsx")
+      }
     return (
         <div>
                 <StylesProvider generateClassName={generateClassName}>
+                <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="20vh"
+      backgroundColor="#000	"
+    >
+     
             <div align="center">
-                <Button onClick={()=>abrirCerrarModalInsertar()} color="secondary" variant="contained">Insertar Proveedor</Button>
+                <Button onClick={()=>abrirCerrarModalInsertar()} color="secondary" variant="contained">Agregar Proveedor</Button>
                 </div>
+  
+    </Box>
             <MaterialTable
           columns={columns}
           data={data}
           title="Listado de Proveedores"  
           actions={[
+            {
+                icon:()=><Button color="primary" variant="contained">Exportar</Button>,
+                tooltip:"Exportar a Excel",
+                onClick:()=>dowloandExcel(),
+                isFreeAction:true
+              },
             {
               icon: 'edit',
               tooltip: 'Editar Proveedor',
@@ -188,6 +208,8 @@ function Table1() {
           ]}
           options={{
             actionsColumnIndex: -1,
+            rowStyle:(data,index)=>index%2===0?{background:"#f5f5f5"}:null,
+            headerStyle:{background:"#708090"}
           }}
           localization={{
             header:{

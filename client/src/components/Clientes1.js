@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import { Modal, Button, TextField} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles'
-import MaterialTable, { Column } from "@material-table/core";
+import MaterialTable from "@material-table/core";
+import XLSX from 'xlsx';
+import Box from '@mui/material/Box';
 import { StylesProvider, createGenerateClassName } from '@material-ui/styles';
 
 const generateClassName = createGenerateClassName({
@@ -13,8 +15,7 @@ const generateClassName = createGenerateClassName({
     const columns= [
       { title: 'Nombre', field: 'name' },
       { title: 'Email', field: 'email' },
-      { title: 'DNI', field: 'DNI' },
-      { title: 'CUIT', field: 'CUIT'},
+      { title: 'DNI/CUIT', field: 'NIDentificador' },
       { title: 'Telefono', field: 'telephone'}
     ];
 
@@ -48,8 +49,7 @@ function Table1() {
     const [clienteSeleccionado,setClienteSeleccionado]=useState({
         name:"",
         email:"",
-        DNI:"",
-        CUIT:"",
+        NIDentificador:"",
         telephone:""
     })
     const handleChange=e=>{
@@ -89,8 +89,7 @@ function Table1() {
                 if(cliente.id===clienteSeleccionado._id)
                 cliente.name=clienteSeleccionado.name;
                 cliente.email=clienteSeleccionado.email;
-                cliente.DNI=clienteSeleccionado.DNI;
-                cliente.CUIT=clienteSeleccionado.CUIT;
+                cliente.NIDentificador=clienteSeleccionado.NIDentificador;
                 cliente.telephone=clienteSeleccionado.telephone;
             })
             setData(dataNueva);
@@ -137,8 +136,7 @@ function Table1() {
             <h3>Agregar Nuevo cliente</h3>
             <TextField className={styles.inputMaterial} label="Nombre" name="name" onChange={handleChange}/>
             <TextField className={styles.inputMaterial} label="Email" name="email" onChange={handleChange}/> 
-            <TextField className={styles.inputMaterial} label="DNI" name="DNI" onChange={handleChange}/>
-            <TextField className={styles.inputMaterial} label="CUIT" name="CUIT" onChange={handleChange}/>
+            <TextField className={styles.inputMaterial} label="DNI/CUIT" name="NIDentificador" onChange={handleChange}/>
             <TextField className={styles.inputMaterial} label="Telefono" name="telephone" onChange={handleChange}/>
         <div align="center">
             <Button color="primary" onClick={()=>peticionesPost()}>Insertar</Button>
@@ -154,8 +152,7 @@ function Table1() {
             <h3>Editar cliente</h3>
             <TextField className={styles.inputMaterial} label="Nombre" name="name" onChange={handleChange} value={clienteSeleccionado && clienteSeleccionado.name}  />
             <TextField className={styles.inputMaterial} label="Email" name="email" onChange={handleChange} value={clienteSeleccionado && clienteSeleccionado.email}/> 
-            <TextField className={styles.inputMaterial} label="DNI" name="DNI" onChange={handleChange} value={clienteSeleccionado&&clienteSeleccionado.DNI}/>
-            <TextField className={styles.inputMaterial} label="CUIT" name="CUIT" onChange={handleChange} value={clienteSeleccionado && clienteSeleccionado.CUIT}/>
+            <TextField className={styles.inputMaterial} label="DNI/CUIT" name="NIDentificador" onChange={handleChange} value={clienteSeleccionado&&clienteSeleccionado.NIDentificador}/>
             <TextField className={styles.inputMaterial} label="Telefono" name="telephone" onChange={handleChange} value={clienteSeleccionado && clienteSeleccionado.telephone}/>
         <div align="center">
             <Button color="primary" onClick={()=>peticionesPut()}>Editar</Button>
@@ -168,7 +165,7 @@ function Table1() {
 
     const bodyEliminar=(
         <div className={styles.modal}>
-            <p>Estas seguro que deseas eliminar el cliente <b>{clienteSeleccionado&&clienteSeleccionado.bank}</b> ? </p>
+            <p>Estas seguro que deseas eliminar el cliente <b>{clienteSeleccionado&&clienteSeleccionado.name}</b> ? </p>
             <div align="right">
                 <Button color="secondary" onClick={()=>peticionesDelete()}>SI</Button>
                 <Button onClick={()=>abrirCerrarModalEliminar()}>NO</Button>
@@ -178,17 +175,44 @@ function Table1() {
         </div>
     )
 
+    const dowloandExcel=()=>{
+        const workSheet=XLSX.utils.json_to_sheet(data)
+        const workBook=XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workBook, workSheet,"ordenes")
+        
+      
+        
+        XLSX.write(workBook,{bookType:"xlsx",type:"binary"})
+
+        XLSX.writeFile(workBook, "OrdenData.xlsx")
+      }
     return (
         <div>
             <StylesProvider generateClassName={generateClassName}>
-              <div align="center">
-              <Button onClick={()=>abrirCerrarModalInsertar()} color="secondary" variant="contained">Insertar cliente</Button>
-              </div>
+            <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="20vh"
+      backgroundColor="#000	"
+    >
+     
+            <div align="center">
+                <Button onClick={()=>abrirCerrarModalInsertar()} color="secondary" variant="contained">Agregar Cliente</Button>
+                </div>
+  
+    </Box>
           <MaterialTable
           columns={columns}
           data={data}
           title="Listado de Clientes"  
           actions={[
+            {
+                icon:()=><Button color="primary" variant="contained">Exportar</Button>,
+                tooltip:"Exportar a Excel",
+                onClick:()=>dowloandExcel(),
+                isFreeAction:true
+              },
             {
               icon: 'edit',
               tooltip: 'Editar Cliente',
@@ -202,6 +226,8 @@ function Table1() {
           ]}
           options={{
             actionsColumnIndex: -1,
+            rowStyle:(data,index)=>index%2===0?{background:"#f5f5f5"}:null,
+            headerStyle:{background:"#708090"}
           }}
           localization={{
             header:{

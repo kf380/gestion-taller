@@ -1,11 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-import {Table, TableContainer, TableHead, TableCell, TableBody, TableRow, Modal, Button, TextField} from '@material-ui/core';
-import {Edit, Delete} from '@material-ui/icons';
+import {Modal, Button, TextField} from '@material-ui/core';
+import XLSX from 'xlsx';
+import Box from '@mui/material/Box';
+import MaterialTable from "@material-table/core";
 import {makeStyles} from '@material-ui/core/styles'
 
-
+import { StylesProvider, createGenerateClassName } from '@material-ui/styles';
+const generateClassName = createGenerateClassName({
+  productionPrefix: 'mt',
+  seed: 'mt'
+});
+const image="https://images.pexels.com/photos/7795660/pexels-photo-7795660.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
+  const columns= [
+    { title: 'Cliente', field: 'client' },
+    { title: 'Fecha', field: 'dateinitial' },
+    { title: 'Fecha de Pago', field: 'datepayment' },
+    { title: 'Monto', field: 'amount', type:"currency", currencySetting:{minimumFractionDigits:0}},
+    { title: 'Banco', field: 'bank'},
+    { title: 'Telefono de contacto', field: 'telephone'}
+  ];
 const useStyles = makeStyles((theme) => ({
+    
     modal: {
       position: 'relative',
       width: 400,
@@ -104,6 +120,7 @@ function Table1() {
         :
         abrirCerrarModalEliminar()
     }
+
     const abrirCerrarModalInsertar=()=>{
         setModalInsertar(!modalInsertar);
     }
@@ -168,46 +185,71 @@ function Table1() {
 
         </div>
     )
+      const dowloandExcel=()=>{
+        const workSheet=XLSX.utils.json_to_sheet(data)
+        const workBook=XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workBook, workSheet,"cheque")
+        
+      
+        
+        XLSX.write(workBook,{bookType:"xlsx",type:"binary"})
 
+        XLSX.writeFile(workBook, "ChequeData.xlsx")
+      }
     return (
         <div>
-         
+                <StylesProvider generateClassName={generateClassName}>
+                <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="20vh"
+      backgroundColor="#000	"
+    >
+     
             <div align="center">
-            <button onClick={()=>abrirCerrarModalInsertar()} color="secondary">Insertar Cheque</button>
-            </div>
-            <TableContainer>
-       <Table >
-         <TableHead>
-           <TableRow>
-             <TableCell>Cliente</TableCell>
-             <TableCell>Fecha</TableCell>
-             <TableCell>Fecha de Pago</TableCell>
-             <TableCell>Monto</TableCell>
-             <TableCell>Banco</TableCell>
-             <TableCell>Telefono de contacto</TableCell>
-             <TableCell>Acciones</TableCell>
-           </TableRow>
-         </TableHead>
+                <Button onClick={()=>abrirCerrarModalInsertar()} color="secondary" variant="contained">Agregar Cheque</Button>
+                </div>
+  
+    </Box>
+    
+     
+            <MaterialTable
+          columns={columns}
+          data={data}
+          title="Listado de Cheques"  
+          actions={[
+            {
+              icon:()=><Button color="primary" variant="contained">Exportar</Button>,
+              tooltip:"Exportar a Excel",
+              onClick:()=>dowloandExcel(),
+              isFreeAction:true
+            },
+            {
+              icon: 'edit',
+              tooltip: 'Editar Cheque',
+              onClick: (event, rowData) => seleccionarCheque(rowData, "Editar")
+            },
+            {
+              icon: 'delete',
+              tooltip: 'Eliminar Cheque',
+              onClick: (event, rowData) => seleccionarCheque(rowData, "Eliminar")
+            }
+          ]}
+          options={{
+            actionsColumnIndex: -1,
+            rowStyle:(data,index)=>index%2===0?{background:"#f5f5f5"}:null,
+            headerStyle:{background:"#FFFAFA"}
+          }}
+          localization={{
+            header:{
+              actions: "Acciones"
+            }
+          }}
+        />
+         </StylesProvider>
 
-         <TableBody>
-           {data.map(cheque=>(
-             <TableRow key={cheque.id}>
-               <TableCell>{cheque.client}</TableCell>
-               <TableCell>{cheque.dateinitial}</TableCell>
-               <TableCell>{cheque.datepayment}</TableCell>
-               <TableCell>{cheque.amount}</TableCell>
-               <TableCell>{cheque.bank}</TableCell>
-               <TableCell>{cheque.telephone}</TableCell>
-               <TableCell>
-                 <Edit className={styles.iconos} onClick={()=>seleccionarCheque(cheque, 'Editar')}/>
-                 &nbsp;&nbsp;&nbsp;
-                 <Delete  className={styles.iconos} onClick={()=>seleccionarCheque(cheque, 'Eliminar')}/>
-                 </TableCell>
-             </TableRow>
-           ))}
-         </TableBody>
-       </Table>
-     </TableContainer>
+
             <Modal
             open={modalInsertar}
             onClose={abrirCerrarModalInsertar}>

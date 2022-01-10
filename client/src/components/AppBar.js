@@ -62,7 +62,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const mdTheme = createTheme();
+const mdTheme = createTheme({
+
+});
 
 export default function DashboardContent() {
   const [open, setOpen] = React.useState(true);
@@ -73,8 +75,9 @@ export default function DashboardContent() {
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
-     <AppBar position="absolute" open={open}>
+     <AppBar  style={{ background: '#FF7F00' }} position="absolute" open={open}>
           <Toolbar
+         
             sx={{
               pr: '24px', // keep right padding when drawer closed
             }}
@@ -94,13 +97,13 @@ export default function DashboardContent() {
             <Typography
               component="h1"
               variant="h6"
-              color="inherit"
+              color="primary"
               noWrap
               sx={{ flexGrow: 1 }}
             >
               Taller
             </Typography>
-            <IconButton color="inherit">
+            <IconButton color="primary">
                 <PersonIcon />
             </IconButton>
           </Toolbar>

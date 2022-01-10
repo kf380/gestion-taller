@@ -28,6 +28,7 @@ function App() {
     <div>
     <BrowserRouter>
     <Route exact path="/" component={Home}/>
+    <Route exact path="/Dashboard/Metricas" component={Home}/>
     <Route exact path="/Prueba" component={Table1}/>
     <Route exact path="/Taller/Ordenes" component={Ordenes}/>
     <Route exact path="/Taller/Presupuesto" component={Presupuesto}/>
@@ -43,7 +44,7 @@ function App() {
     <Route exact path="/Caja/Movimientos" component={Movimientos}/>
     <Route exact path="/Caja/CuentaCorrientes" component={CuentaCorrientes}/>
     <Route exact path="/Caja/Cheques" component={Cheques}/>
-    <Route exact path="/Inventario/Repuestos" component={Repuestos}/>
+    <Route exact path="/Inventario/Productos" component={Repuestos}/>
 
   
     </BrowserRouter>

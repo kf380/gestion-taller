@@ -1,84 +1,11 @@
-// import React , { useEffect, useState }   from 'react';
-// import { useSelector, useDispatch} from 'react-redux';
-// import Link from '@mui/material/Link';
-// import {getBill} from "../Redux/actions/actions";
-// import Table from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell from '@mui/material/TableCell';
-// import TableHead from '@mui/material/TableHead';
-// import TableRow from '@mui/material/TableRow';
-// import Title from './Title';
-
-// // Generate Order Data
-
-
-// function preventDefault(event) {
-//   event.preventDefault();
-// }
-
-// export default function Factura() {
-//   const dispatch =useDispatch()
-//   const [select, setSelect] = useState('');
-//   const [bills,setBills] = useState([])
-
-//   useEffect(()=>{
-//   dispatch(getBill())
-// },[dispatch])
-
-//   useEffect(()=>{
-//     if(select === '...'){
-//       return setBills([])
-//     }
-//     const billFilter = getAll.filter(bil => bil.status === select);
-//     setBills(billFilter)
-//   },[select])
-
-//   const getAll = useSelector((state)=> state.allBills);
-
-//   console.log(getAll,"pruebaaaa")
-
-//   return (
-//     <React.Fragment>
-//       <Table size="small">
-//         <TableHead>
-//           <TableRow>
-//             <TableCell>Cliente</TableCell>
-//             <TableCell>Fecha</TableCell>
-//             <TableCell>Descripcion</TableCell>
-//             <TableCell>Estado</TableCell>
-//             <TableCell>Forma de Pago</TableCell>
-//             <TableCell>Bruto</TableCell>
-//             <TableCell>IVA</TableCell>
-//             <TableCell>Total</TableCell>
-//           </TableRow>
-//         </TableHead>
-//         <TableBody>
-//         {getAll.map((bills)=>(
-//              <TableRow key={bills.id}>
-//              <TableCell>{bills.client}</TableCell>
-//              <TableCell>{bills.date}</TableCell>
-//              <TableCell>{bills.description}</TableCell>
-//              <TableCell>{bills.status}</TableCell>
-//              <TableCell>{bills.formaPago}</TableCell>
-//              <TableCell>{bills.bruto}</TableCell>
-//              <TableCell>{bills.IVA}</TableCell>
-//              <TableCell>{bills.total}</TableCell>
-
-//            </TableRow>
-//           ))}
-//         </TableBody>
-//       </Table>
-     
-//     </React.Fragment>
-//   );
-// }
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import { Modal, Button, TextField} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles'
-import MaterialTable, { Column } from "@material-table/core";
+import MaterialTable from "@material-table/core";
 import { StylesProvider, createGenerateClassName } from '@material-ui/styles';
+import XLSX from 'xlsx';
+import Box from '@mui/material/Box';
 
 const generateClassName = createGenerateClassName({
     productionPrefix: 'mt',
@@ -220,7 +147,7 @@ function Table1() {
     const bodyInsertar=(
         <div className={styles.modal}>
             <h3>Agregar Nuevo factura</h3>
-            <TextField className={styles.inputMaterial} label="factura" name="client" onChange={handleChange}/>
+            <TextField className={styles.inputMaterial} label="Cliente" name="client" onChange={handleChange}/>
             <TextField className={styles.inputMaterial} label="Fecha" name="date" onChange={handleChange}/> 
             <TextField className={styles.inputMaterial} label="Descripcion" name="description" onChange={handleChange}/>
             <TextField className={styles.inputMaterial} label="Estado" name="status" onChange={handleChange}/>
@@ -268,18 +195,45 @@ function Table1() {
 
         </div>
     )
+    const dowloandExcel=()=>{
+        const workSheet=XLSX.utils.json_to_sheet(data)
+        const workBook=XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workBook, workSheet,"presupuesto")
+        
+      
+        
+        XLSX.write(workBook,{bookType:"xlsx",type:"binary"})
+
+        XLSX.writeFile(workBook, "presupuestoData.xlsx")
+      }
 
     return (
         <div>
             <StylesProvider generateClassName={generateClassName}>
-              <div align="center">
-              <Button onClick={()=>abrirCerrarModalInsertar()} color="secondary" variant="contained">Insertar factura</Button>
-              </div>
+            <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="20vh"
+      backgroundColor="#000	"
+    >
+     
+            <div align="center">
+                <Button onClick={()=>abrirCerrarModalInsertar()} color="secondary" variant="contained">Agregar factura</Button>
+                </div>
+  
+    </Box>
           <MaterialTable
           columns={columns}
           data={data}
           title="Listado de Facturas"  
           actions={[
+            {
+                icon:()=><Button color="primary" variant="contained">Exportar</Button>,
+                tooltip:"Exportar a Excel",
+                onClick:()=>dowloandExcel(),
+                isFreeAction:true
+              },
             {
               icon: 'edit',
               tooltip: 'Editar Factura',
@@ -293,6 +247,8 @@ function Table1() {
           ]}
           options={{
             actionsColumnIndex: -1,
+            rowStyle:(data,index)=>index%2===0?{background:"#f5f5f5"}:null,
+            headerStyle:{background:"#708090"}
           }}
           localization={{
             header:{

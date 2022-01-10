@@ -6,10 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import AppBar from './AppBar';
-import Select from './Select'
-import Search from './Search'
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import Compras1 from './Compras1';
 
 const mdTheme = createTheme();
@@ -43,7 +40,6 @@ function DashboardContent() {
                 </Paper>
               </Grid>
             </Grid>
-            {/* <Copyright sx={{ pt: 4 }} /> */}
           </Container>
         </Box>
             </Box>

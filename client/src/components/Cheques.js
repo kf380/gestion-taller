@@ -6,10 +6,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import AppBar from './AppBar';
-import Select from './Select'
-import Search from './Search'
-import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import Cheques1 from './Cheques1';
 import Table1 from './Table1';
 
@@ -38,10 +34,10 @@ export default function Cheques() {
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  {/* <Cheques1/> */}
-                  <Table1/>
-                </Paper>
+                
+                  <Cheques1/>
+                  {/* <Table1/> */}
+               
               </Grid>
             </Grid>
           </Container>

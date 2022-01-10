@@ -6,10 +6,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import AppBar from './AppBar';
-import Select from './Select'
-import Search from './Search'
-import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import Repuestos1 from './Repuestos1';
 
 const mdTheme = createTheme();
@@ -35,26 +31,10 @@ function DashboardContent() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid  item xs={4} md={4} lg={4}>
-              <Button variant="contained" color="success">Nuevo</Button>
-              </Grid>
-              <Grid>
-               <Search/>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-            
-              </Grid>
-              {/* Recent Orders */}
+     
               <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                   <Repuestos1/>
-                </Paper>
               </Grid>
-            </Grid>
-            {/* <Copyright sx={{ pt: 4 }} /> */}
           </Container>
         </Box>
             </Box>

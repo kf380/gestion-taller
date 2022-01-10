@@ -1,82 +1,10 @@
-// import React , { useEffect, useState }   from 'react';
-// import { useSelector, useDispatch} from 'react-redux';
-// import Link from '@mui/material/Link';
-// import {getVehicle} from "../Redux/actions/actions";
-// import Table from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell from '@mui/material/TableCell';
-// import TableHead from '@mui/material/TableHead';
-// import TableRow from '@mui/material/TableRow';
-// import Title from './Title';
-
-
-// function preventDefault(event) {
-//   event.preventDefault();
-// }
-
-// export default function Vehicle() {
-//   const dispatch =useDispatch()
-//   const [select, setSelect] = useState('');
-//   const [vehicle,setVehicles] = useState([])
-
-//   useEffect(()=>{
-//   dispatch(getVehicle())
-// },[dispatch])
-
-//   useEffect(()=>{
-//     if(select === '...'){
-//       return setVehicles([])
-//     }
-//     const vehicleFilter = getAll.filter(veh => veh.status === select);
-//     setVehicles(vehicleFilter)
-//   },[select])
-
-//   const getAll = useSelector((state)=> state.allVehicles);
-
-//   console.log(getAll,"pruebaaaa")
-
-//   return (
-//     <React.Fragment>
-//       <Title>Vehiculos</Title>
-//       <Table size="small">
-//         <TableHead>
-//           <TableRow>
-//             <TableCell>ID</TableCell>
-//             <TableCell>Dominio</TableCell>
-//             <TableCell>Marca</TableCell>
-//             <TableCell>Modelo</TableCell>
-//             <TableCell>Tipo</TableCell>
-//             <TableCell>Año</TableCell>
-//             <TableCell>Kilometros</TableCell>
-//           </TableRow>
-//         </TableHead>
-//         <TableBody>
-//         {getAll.map((vehicles)=>(
-//              <TableRow key={vehicles.id}>
-//              <TableCell>{vehicles._id}</TableCell>
-//              <TableCell>{vehicles.domain}</TableCell>
-//              <TableCell>{vehicles.brand}</TableCell>
-//              <TableCell>{vehicles.model}</TableCell>
-//              <TableCell>{vehicles.type}</TableCell>
-//              <TableCell>{vehicles.age}</TableCell>
-//              <TableCell>{vehicles.kilometers}</TableCell>
-
-//            </TableRow>
-//           ))}
-//         </TableBody>
-//       </Table>
-     
-//     </React.Fragment>
-//   );
-// }
-
-
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-import {Table, TableContainer, TableHead, TableCell, TableBody, TableRow, Modal, Button, TextField} from '@material-ui/core';
-import MaterialTable, { Column } from "@material-table/core";
+import { Modal, Button, TextField} from '@material-ui/core';
+import MaterialTable from "@material-table/core";
 import {makeStyles} from '@material-ui/core/styles'
+import XLSX from 'xlsx';
+import Box from '@mui/material/Box';
 import { StylesProvider, createGenerateClassName } from '@material-ui/styles';
 const generateClassName = createGenerateClassName({
   productionPrefix: 'mt',
@@ -84,7 +12,6 @@ const generateClassName = createGenerateClassName({
 });
 
   const columns= [
-    { title: 'ID', field: '_id' },
     { title: 'Dominio', field: 'domain' },
     { title: 'Marca', field: 'brand'},
     { title: 'Modelo', field: 'model'},
@@ -126,7 +53,7 @@ function Table1() {
         model:"",
         type:"",
         age:"",
-        kilometres:"",
+        kilometers:"",
         
     })
     const handleChange=e=>{
@@ -168,7 +95,7 @@ function Table1() {
                 orden.brand=vehiculoSeleccionado.brand;
                 orden.model=vehiculoSeleccionado.model;
                 orden.age=vehiculoSeleccionado.age;
-                orden.kilometres=vehiculoSeleccionado.kilometres;
+                orden.kilometers=vehiculoSeleccionado.kilometers;
                 orden.type=vehiculoSeleccionado.type;
             })
             setData(dataNueva);
@@ -218,7 +145,7 @@ function Table1() {
             <TextField className={styles.inputMaterial} label="Marca" name="brand" onChange={handleChange}/> 
             <TextField className={styles.inputMaterial} label="Modelo" name="model" onChange={handleChange}/>
             <TextField className={styles.inputMaterial} label="Año" name="age" onChange={handleChange}/>
-            <TextField className={styles.inputMaterial} label="Kilometros" name="kilometres" onChange={handleChange}/>
+            <TextField className={styles.inputMaterial} label="Kilometros" name="kilometers" onChange={handleChange}/>
             <TextField className={styles.inputMaterial} label="Tipo" name="type" onChange={handleChange}/>
         <div align="center">
             <Button color="primary" onClick={()=>peticionesPost()}>Insertar</Button>
@@ -236,7 +163,7 @@ function Table1() {
             <TextField className={styles.inputMaterial} label=" Marca" name="brand" onChange={handleChange} value={vehiculoSeleccionado && vehiculoSeleccionado.brand}/> 
             <TextField className={styles.inputMaterial} label="Modelo" name="model" onChange={handleChange} value={vehiculoSeleccionado&&vehiculoSeleccionado.model}/>
             <TextField className={styles.inputMaterial}label="Año" name="age" onChange={handleChange} value={vehiculoSeleccionado&&vehiculoSeleccionado.age}/>
-            <TextField className={styles.inputMaterial} label="Kilometros" name="kilometres" onChange={handleChange}value={vehiculoSeleccionado && vehiculoSeleccionado.kilometres}/>
+            <TextField className={styles.inputMaterial} label="Kilometros" name="kilometers" onChange={handleChange}value={vehiculoSeleccionado && vehiculoSeleccionado.kilometers}/>
             <TextField className={styles.inputMaterial} label="Tipo" name="type" onChange={handleChange} value={vehiculoSeleccionado && vehiculoSeleccionado.type}/>
         <div align="center">
             <Button color="primary" onClick={()=>peticionesPut()}>Editar</Button>
@@ -249,7 +176,7 @@ function Table1() {
 
     const bodyEliminar=(
         <div className={styles.modal}>
-            <p>Estas seguro que deseas eliminar la orden <b>{vehiculoSeleccionado&&vehiculoSeleccionado.bank}</b> ? </p>
+            <p>Estas seguro que deseas eliminar el vehiculo con dominio <b>{vehiculoSeleccionado&&vehiculoSeleccionado.domain}</b> ? </p>
             <div align="right">
                 <Button color="secondary" onClick={()=>peticionesDelete()}>SI</Button>
                 <Button onClick={()=>abrirCerrarModalEliminar()}>NO</Button>
@@ -258,18 +185,45 @@ function Table1() {
 
         </div>
     )
+    const dowloandExcel=()=>{
+        const workSheet=XLSX.utils.json_to_sheet(data)
+        const workBook=XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workBook, workSheet,"Vehiculos")
+        
+      
+        
+        XLSX.write(workBook,{bookType:"xlsx",type:"binary"})
+
+        XLSX.writeFile(workBook, "vehiculoData.xlsx")
+      }
 
     return (
         <div>
                 <StylesProvider generateClassName={generateClassName}>
+                <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="20vh"
+      backgroundColor="#000	"
+    >
+     
             <div align="center">
-                <Button onClick={()=>abrirCerrarModalInsertar()} color="secondary" variant="contained">Insertar vehiculos</Button>
+                <Button onClick={()=>abrirCerrarModalInsertar()} color="secondary" variant="contained">Agregar vehiculo</Button>
                 </div>
+  
+    </Box>
             <MaterialTable
           columns={columns}
           data={data}
           title="Listado de vehiculos"  
           actions={[
+            {
+                icon:()=><Button color="primary" variant="contained">Exportar</Button>,
+                tooltip:"Exportar a Excel",
+                onClick:()=>dowloandExcel(),
+                isFreeAction:true
+              },
             {
               icon: 'edit',
               tooltip: 'Editar orden',
@@ -283,6 +237,8 @@ function Table1() {
           ]}
           options={{
             actionsColumnIndex: -1,
+            rowStyle:(data,index)=>index%2===0?{background:"#f5f5f5"}:null,
+            headerStyle:{background:"#708090"}
           }}
           localization={{
             header:{

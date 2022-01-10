@@ -6,11 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import AppBar from './AppBar';
-import Select from './Select'
-import { Typography } from '@mui/material';
-import Search from './Search'
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import Factura1 from './Factura1';
 
 const mdTheme = createTheme();

@@ -6,23 +6,18 @@ import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import AppBar from './AppBar';
-import Select from './Select'
-import Search from './Search'
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
-import Orders from './Orders';
-import Title from './Title';
-import Divider from '@mui/material/Divider';
+import Ordenes1 from './Ordenes1';
 const mdTheme = createTheme();
 
 function DashboardContent() {
 
-    return (
-        <ThemeProvider theme={mdTheme}>
-            <Box sx={{ display: 'flex' }}>
-                <CssBaseline />
-                <AppBar />
-                <Box
+  return (
+    <ThemeProvider theme={mdTheme}>
+      <Box sx={{ display: 'flex' }}>
+        <CssBaseline />
+        <AppBar />
+        <Box
           component="main"
           sx={{
             backgroundColor: (theme) =>
@@ -36,33 +31,26 @@ function DashboardContent() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-          <Grid container spacing={2}
+            <Grid container spacing={2}
               direction="row"
               justifyContent="center"
               alignItems="center">
               <Grid item xs={12}>
-              <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-              
-              
-           
-             
-      
-         
-             
-                  <Orders/>
-      
-     
-        
+                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+
+
+                  <Ordenes1 />
+
                 </Paper>
               </Grid>
             </Grid>
-            </Container>
+          </Container>
         </Box>
-            </Box>
-        </ThemeProvider>
-    );
+      </Box>
+    </ThemeProvider>
+  );
 }
 
 export default function Dashboard() {
-    return <DashboardContent />;
+  return <DashboardContent />;
 }
