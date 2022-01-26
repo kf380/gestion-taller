@@ -2,7 +2,7 @@
 
 ![gestion](https://user-images.githubusercontent.com/74383139/151168029-3f9724ee-88c1-44e5-b27d-e2a0def8a295.png)
 
-React | Redux | Node.js | Express.js | MongoDB  | HTML | CSS | MaterialUI 
+React | Redux | Node.js | Express.js | MongoDB  | HTML | CSS | MaterialUI
 
 <p align="left"> 
   <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank"> 
